@@ -1,0 +1,97 @@
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { NavComponent } from './nav/nav.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { AuthService } from './_services/auth.service';
+import { HomeComponent } from './home/home.component';
+import { RegisterComponent } from './register/register.component';
+import { ErrorInterceptorProvider } from './_services/error.interceptor';
+import { AlertifyService } from './_services/alertify.service';
+import { BsDropdownModule, TabsModule, BsDatepickerModule } from 'ngx-bootstrap';
+import { MemberListComponent } from './member-list/member-list.component';
+import { ListsComponent } from './lists/lists.component';
+import { MessagesComponent } from './messages/messages.component';
+import { appRoutes } from './route';
+import { AuthGuard } from './_gaurds/auth.guard';
+import { UserService } from './_services/user.service';
+import { MemberCardComponent } from './member-list/member-card/member-card.component';
+import { JwtModule } from '@auth0/angular-jwt';
+import { MemberDetailComponent } from './member-detail/member-detail.component';
+import { MemberDetailRessolver } from './_ressolver/member-detail.ressolver';
+import { NgxGalleryModule } from 'ngx-gallery';
+import { CustomHammerConfig } from './CustomHammerConfig';
+import { MemberEditComponent } from './member-edit/member-edit.component';
+import { MemberEditRessolver } from './_ressolver/member-edit.ressolver';
+import { PreventUnsavedChanges } from './_gaurds/prevent-unsaved-changes.guard';
+import { PhotoEditorComponent } from './photo-editor/photo-editor.component';
+import { FileUploadModule } from 'ng2-file-upload';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {TimeAgoPipe} from 'time-ago-pipe';
+import { PaginationModule } from 'ngx-bootstrap';
+import { ButtonsModule } from 'ngx-bootstrap';
+import { ListResolver } from './_ressolver/lists.resolver';
+
+export function tokenGetter() {
+   return localStorage.getItem('token');
+}
+
+@NgModule({
+   declarations: [
+      AppComponent,
+      NavComponent,
+      HomeComponent,
+      RegisterComponent,
+      MemberListComponent,
+      ListsComponent,
+      MessagesComponent,
+      MemberCardComponent,
+      MemberDetailComponent,
+      MemberEditComponent,
+      PhotoEditorComponent,
+      TimeAgoPipe
+   ],
+   imports: [
+      BrowserModule,
+      AppRoutingModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      HttpClientModule,
+      BsDropdownModule.forRoot(),
+      RouterModule.forRoot(appRoutes),
+      JwtModule.forRoot({
+         config: {
+            tokenGetter: tokenGetter,
+            whitelistedDomains: ['localhost:5000'],
+            blacklistedRoutes: ['localhost:5000/api/auth']
+         }
+      }),
+      TabsModule.forRoot(),
+      NgxGalleryModule,
+      FileUploadModule,
+      ReactiveFormsModule,
+      BsDatepickerModule.forRoot(),
+      PaginationModule.forRoot(),
+      ButtonsModule.forRoot()
+   ],
+   providers: [
+      AuthService,
+      ErrorInterceptorProvider,
+      AlertifyService,
+      AuthGuard,
+      UserService, MemberDetailRessolver, MemberEditRessolver,
+      {
+         provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig ,
+      },
+      PreventUnsavedChanges,
+      ListResolver
+   ],
+   bootstrap: [
+      AppComponent
+   ]
+})
+export class AppModule { }
